@@ -129,4 +129,4 @@ jobs:
           push: true
           tags: |
             naxbr/ani-rss:latest
-            naxbr/ani-rss:${{ env.POM_VERSION }} # Docker 标签通常不带 "v"
+            naxbr/ani-rss:${{ env.POM_VERSION }} 
