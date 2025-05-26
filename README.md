@@ -1,11 +1,7 @@
-<div align="center">
-<img alt="icon-512.png" height="80" src="ui/public/icon-512.png"/>
-<h1 align="center" style="margin-top: 0">ANI-RSS</h1>
-<p align="center">
-<strong>自动追番、订阅、下载 蜜柑RSS动漫</strong>
-</p>
+
 
 ## 对原项目进行了一定更改，通过fastapi实现了通过rss直接添加磁力到网盘
+
 ## 安装方法
 ```
 sudo apt update
@@ -15,10 +11,12 @@ sudo apt install openjdk-17-jdk
 ```
 sudo bash -c "$(curl -fsSL https://github.com/wushuo894/ani-rss/raw/master/linux/install-ani-rss.sh)"
 ```
+
 ## docker部署
+
 镜像地址是naxbr/ani-rss
 
-## 其他
+
 
 ### 推广须知
 
