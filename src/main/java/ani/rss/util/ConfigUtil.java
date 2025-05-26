@@ -182,7 +182,10 @@ public class ConfigUtil {
                 .setAlistDownloadTimeout(60)
                 .setTvShowNfo(false)
                 .setConfigBackup(false)
-                .setConfigBackupDay(7);
+                .setConfigBackupDay(7);         
+                .setPikpakApiUrl("")          // 新增 PikPak API URL 默认值
+                .setPikpakApiToken("")        // 新增 PikPak API Token 默认值
+                .setPikpakDefaultFolderId(""); // 新增 PikPak 默认文件夹ID 默认值 
     }
 
     /**
