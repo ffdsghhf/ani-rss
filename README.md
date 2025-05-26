@@ -5,25 +5,18 @@
 <strong>自动追番、订阅、下载 蜜柑RSS动漫</strong>
 </p>
 
-[快速开始](https://docs.wushuo.top/start)
-|
-[使用文档](https://docs.wushuo.top/add-rss)
-|
-[Docker部署](https://docs.wushuo.top/deploy/docker)
-|
-[常见问题](https://docs.wushuo.top/faq)
-|
-[参与开发](https://docs.wushuo.top/dev/basic)
-
-[![GitHub](https://img.shields.io/badge/-GitHub-181717?logo=github)](https://github.com/wushuo894/ani-rss)
-![GitHub License](https://img.shields.io/github/license/wushuo894/ani-rss)
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/wushuo894/ani-rss?color=blue&label=download&sort=semver)](https://github.com/wushuo894/ani-rss/releases/latest)
-[![GitHub all releases](https://img.shields.io/github/downloads/wushuo894/ani-rss/total?color=blue&label=github%20downloads)](https://docs.wushuo.top/history)
-[![telegram](https://img.shields.io/static/v1?label=telegram&amp;message=ani-rss&amp;color=blue)](https://t.me/ani_rss)
-
-</div>
-
-![image](https://github.com/wushuo894/ani-rss-docs/raw/master/docs/public/screenshot/62f73859bd2fb7063f7f1eff12545fec-screenshot.webp)
+## 对原项目进行了一定更改，通过fastapi实现了通过rss直接添加磁力到网盘
+## 安装方法
+```
+sudo apt update
+sudo apt install openjdk-17-jdk
+```
+然后
+```
+sudo bash -c "$(curl -fsSL https://github.com/wushuo894/ani-rss/raw/master/linux/install-ani-rss.sh)"
+```
+## docker部署
+镜像地址是naxbr/ani-rss
 
 ## 其他
 
@@ -48,13 +41,7 @@
   <img src="https://contrib.rocks/image?repo=wushuo894/ani-rss" alt="contributors" />
 </a>
 
-## 爱发电
 
-<a href="https://afdian.com/a/wushuo894" target="_blank">
-  <img src="https://github.com/wushuo894/ani-rss-docs/raw/master/docs/image/support_aifadian.svg" alt="support_aifadian">
-</a>
-
-您的每一次 star ⭐ 和 赞助 🎁 都是我持续优化的动力。让我们一起维护这个用爱发电的项目！
 
 ## 免责声明
 
