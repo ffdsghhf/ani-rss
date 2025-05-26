@@ -16,6 +16,12 @@ sudo bash -c "$(curl -fsSL https://github.com/wushuo894/ani-rss/raw/master/linux
 
 镜像地址是naxbr/ani-rss
 
+部署好之后修改config配置文件
+download":"PikPakDownloader"
+pikpakApiUrl:"你的fastapi网址/offline"
+pikpakApiToken:"fastapi设置的访问令牌"
+pikpakDefaultFolderId":"为空则为默认文件夹"
+
 
 
 ### 推广须知
