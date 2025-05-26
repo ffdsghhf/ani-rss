@@ -98,7 +98,7 @@ jobs:
             ./target/ani-rss.win.x86_64.zip
             ./target/ani-rss.win.x86_64.zip.md5
             ./info.json
-        # src/main/resources/application.properties.template # <--- 确认此路径和文件名
+       
             linux/install-ani-rss.sh
             linux/ani-rss.sh
             linux/uninstall-ani-rss.sh
