@@ -692,4 +692,55 @@ public class Config implements Serializable {
      * 备份天数
      */
     private Integer configBackupDay;
+    // 在 Config.java 文件的末尾，但在最后的 } 之前添加：
+
+    // --- PikPak API Configuration START ---
+    /**
+     * PikPak管理应用API的URL (例如: http://localhost:8000/add_from_ani_rss)
+     */
+    private String pikpakApiUrl;
+
+    /**
+     * PikPak管理应用API的认证Token (Bearer Token)
+     */
+    private String pikpakApiToken;
+
+    /**
+     * (可选) 将番剧添加到PikPak时的默认父文件夹ID。
+     * 如果为空，你的PikPak管理应用API可能需要有自己的默认逻辑（如根目录或特定默认文件夹）。
+     */
+    private String pikpakDefaultFolderId;
+    // --- PikPak API Configuration END ---
+
+    // 由于你使用了 @Data 和 @Accessors(chain = true) (Lombok注解),
+    // getter 和 setter 方法通常会自动生成。
+    // 如果没有自动生成或你想明确定义，可以像下面这样添加：
+    /*
+    public String getPikpakApiUrl() {
+        return pikpakApiUrl;
+    }
+
+    public Config setPikpakApiUrl(String pikpakApiUrl) {
+        this.pikpakApiUrl = pikpakApiUrl;
+        return this;
+    }
+
+    public String getPikpakApiToken() {
+        return pikpakApiToken;
+    }
+
+    public Config setPikpakApiToken(String pikpakApiToken) {
+        this.pikpakApiToken = pikpakApiToken;
+        return this;
+    }
+
+    public String getPikpakDefaultFolderId() {
+        return pikpakDefaultFolderId;
+    }
+
+    public Config setPikpakDefaultFolderId(String pikpakDefaultFolderId) {
+        this.pikpakDefaultFolderId = pikpakDefaultFolderId;
+        return this;
+    }
+    */
 }
