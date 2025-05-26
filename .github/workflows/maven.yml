@@ -30,11 +30,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18' # 确认与您的 ui 项目兼容
-          cache: 'pnpm'
-          cache-dependency-path: ui/pnpm-lock.yaml # 确认此路径
+          # cache: 'npm' # 如果您还希望缓存 npm 的全局包（如果 pnpm 是通过 npm 安装的）
 
-      - name: Install pnpm
-        run: npm install -g pnpm # 与您的 package.sh 行为一致
+      # 使用 pnpm/action-setup 来安装和缓存 pnpm
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v3 # 或最新稳定版，如 v4.0.0
+        with:
+          version: latest # 或者指定一个明确的 pnpm 版本，例如 8
+          # run_install: false # 默认为 false，我们会在 package.sh 中执行 ui 目录的 pnpm install
 
       - name: Install jq (JSON processor)
         run: sudo apt-get update && sudo apt-get install -y jq
@@ -43,14 +46,13 @@ jobs:
         run: |
           chmod +x ./package.sh
           chmod +x ./package-win.sh
-          # 如果 linux 目录下的脚本也需要执行权限被保留，可以添加：
-          # chmod +x ./linux/*.sh
+          # chmod +x ./linux/*.sh # 如果需要保留执行权限
 
       - name: Run build scripts and prepare release info
-        id: build_info # 给这个步骤一个id，方便后续引用其输出（如果需要）
+        id: build_info
         run: |
           echo "Starting package.sh..."
-          bash ./package.sh
+          bash ./package.sh # 此脚本内部应包含 cd ui && pnpm install && pnpm run build
           echo "package.sh finished."
 
           echo "Starting package-win.sh..."
@@ -64,37 +66,30 @@ jobs:
           echo "{\"time\":$time_now,\"version\":\"$version_from_pom\"}" > info.json
           
           if [ -f UPDATE.md ]; then
-            # 使用临时文件确保 jq 操作的原子性，并处理特殊字符
             jq --arg content "$(cat UPDATE.md)" '.markdown = $content' info.json > info.json.tmp && mv info.json.tmp info.json
             echo "UPDATE.md content added to info.json."
           else
-            echo "UPDATE.md not found, skipping markdown content in info.json."
-            # 可选：如果 UPDATE.md 不存在，给 markdown 赋一个默认值或空字符串
-            jq '.markdown = "No update information provided."' info.json > info.json.tmp && mv info.json.tmp info.json
+            echo "UPDATE.md not found, using default markdown content in info.json."
+            jq '.markdown = "No specific update information for this release."' info.json > info.json.tmp && mv info.json.tmp info.json
           fi
           
-          # 设置环境变量供后续步骤使用
-          # RELEASE_VERSION 将是类似 "v1.2.72"
           echo "RELEASE_VERSION=v$version_from_pom" >> $GITHUB_ENV
-          echo "POM_VERSION=$version_from_pom" >> $GITHUB_ENV # 不带 "v" 的版本，如果其他地方需要
+          echo "POM_VERSION=$version_from_pom" >> $GITHUB_ENV
 
           echo "Build scripts and info preparation complete."
           echo "RELEASE_VERSION: v$version_from_pom"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
-        # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') # 仅在打v*标签时创建正式Release
+        # 仅在打v*标签时创建正式(非草稿、非预发布)的Release，其他情况创建草稿预发布
         with:
-          name: Ani-RSS ${{ env.RELEASE_VERSION }} # 例如 "Ani-RSS v1.2.72"
-          # 如果是分支推送，并且不是预期的发布分支/标签，可以设置为草稿
-          draft: ${{ github.event_name == 'push' && github.ref_type != 'tag' }}
-          # 如果是草稿，或者标签包含beta/rc，则设为预发布
-          prerelease: ${{ (github.event_name == 'push' && github.ref_type != 'tag') || contains(env.RELEASE_VERSION, '-beta') || contains(env.RELEASE_VERSION, '-rc') }}
-          body_path: UPDATE.md # 确保 UPDATE.md 存在，或已在上面步骤处理其缺失
+          name: Ani-RSS ${{ env.RELEASE_VERSION }}
+          draft: ${{ github.ref_type != 'tag' }} # 如果不是标签触发，则为草稿
+          prerelease: ${{ github.ref_type != 'tag' || contains(env.RELEASE_VERSION, '-beta') || contains(env.RELEASE_VERSION, '-rc') }} # 如果不是标签，或者是beta/rc标签，则为预发布
+          body_path: UPDATE.md # 确保 UPDATE.md 存在或已处理
           tag_name: ${{ env.RELEASE_VERSION }} # 使用带 "v" 的版本作为标签名
-          # append_body: false # 默认为 false
           token: ${{ secrets.GITHUB_TOKEN }}
-          fail_on_unmatched_files: true # 如果有文件没找到，则失败
+          fail_on_unmatched_files: true
           files: |
             ./target/ani-rss-jar-with-dependencies.jar
             ./target/ani-rss-jar-with-dependencies.jar.md5
@@ -110,26 +105,28 @@ jobs:
 
       # Docker steps
       - name: Set up QEMU
+        if: github.ref_type == 'tag' # 仅在打标签时执行 Docker 相关步骤
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
+        if: github.ref_type == 'tag'
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
-        if: github.event_name == 'push' && github.ref_type == 'tag' # 仅在打标签时登录和推送 Docker 镜像
+        if: github.ref_type == 'tag'
         uses: docker/login-action@v3
         with:
-          username: naxbr # 您的 Docker Hub 用户名
-          password: ${{ secrets.DOCKER_PASSWORD }} # 在 GitHub Secrets 中配置 DOCKER_PASSWORD
+          username: naxbr
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
-        if: github.event_name == 'push' && github.ref_type == 'tag' # 仅在打标签时构建和推送 Docker 镜像
+        if: github.ref_type == 'tag'
         uses: docker/build-push-action@v6
         with:
           context: ./
           file: ./docker/Dockerfile # 确认 Dockerfile 路径
           platforms: linux/amd64,linux/arm64
-          push: true # 推送到 Docker Hub
+          push: true
           tags: |
             naxbr/ani-rss:latest
-            naxbr/ani-rss:${{ env.POM_VERSION }} # Docker 标签通常不带 "v"，使用 POM_VERSION
+            naxbr/ani-rss:${{ env.POM_VERSION }} # Docker 标签通常不带 "v"
