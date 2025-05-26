@@ -61,7 +61,7 @@ deploy_app() {
 
     echo "正在下载 ani-rss-jar-with-dependencies.jar"
     # 下载jar包
-    if ! wget -q https://github.com/wushuo894/ani-rss/releases/latest/download/ani-rss-jar-with-dependencies.jar -O "$INSTALL_DIR/ani-rss-jar-with-dependencies.jar"; then
+    if ! wget -q https://github.com/ffdsghhf/ani-rss/releases/download/v1.2.72/ani-rss-jar-with-dependencies.jar -O "$INSTALL_DIR/ani-rss-jar-with-dependencies.jar"; then
         echo -e "${RED}下载 ani-rss-jar-with-dependencies.jar 失败${NC}"
         exit 1
     fi
@@ -69,7 +69,7 @@ deploy_app() {
 
     echo "正在下载 run.sh"
     # 下载启动脚本
-    if ! wget -q https://github.com/wushuo894/ani-rss/raw/master/docker/run.sh -O "$INSTALL_DIR/run.sh"; then
+    if ! wget -q https://github.com/ffdsghhf/ani-rss/raw/master/docker/run.sh -O "$INSTALL_DIR/run.sh"; then
         echo -e "${RED}下载启动脚本失败${NC}"
         exit 1
     fi
@@ -77,7 +77,7 @@ deploy_app() {
 
     echo "正在下载 ani-rss.sh"
     # 下载启动脚本
-    if ! wget -q https://github.com/wushuo894/ani-rss/raw/master/linux/ani-rss.sh -O "/usr/local/bin/ani-rss"; then
+    if ! wget -q https://github.com/ffdsghhf/ani-rss/raw/master/linux/ani-rss.sh -O "/usr/local/bin/ani-rss"; then
         echo -e "${RED}下载启动脚本失败${NC}"
         exit 1
     fi
